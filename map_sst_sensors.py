@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Dec 17 06:39:08 2023
-
-@author: JiM
+Created on Tue Apr 29 13:45:47 2025
 """
+year=2025
+
 import pandas as pd
 import numpy as np
 from matplotlib import pylab as plt
@@ -46,36 +46,48 @@ def getgbox(area):
     gbox=[-70.75,-69.8,41.5,42.23] # CCBAY
   elif area=='inside_CCBAY':
     gbox=[-70.75,-70.,41.7,42.15] # inside CCBAY
+  elif area=='lower_CCBAY':
+    gbox=[-70.6,-70.,41.7,41.94] # lower CCBAY  
   elif area=='NEC':
     gbox=[-68.,-63.,38.,43.5] # NE Channel
   elif area=='NE':
     gbox=[-76.,-66.,35.,44.5] # NE Shelf 
   return gbox
 
-area='inside_CCBAY'
+area='lower_CCBAY'
 gb=getgbox(area)
 fig = plt.figure()
 
-df=pd.read_csv('https://educationalpassages.org/wp-content/uploads/csv/sensor/Riptide_8s.csv')
-x2=df['longitude'].values
-y2=df['latitude'].values
-t2=df['water_temp'].values
-df=pd.read_csv('https://educationalpassages.org/wp-content/uploads/csv/sensor/Rock_Star_3s.csv')
-x3=df['longitude'].values
-y3=df['latitude'].values
-t3=df['water_temp'].values
-df=pd.read_csv('https://educationalpassages.org/wp-content/uploads/csv/sensor/Riptide_9s.csv')
-x4=df['longitude'].values
-y4=df['latitude'].values
-t4=df['water_temp'].values
-df=pd.read_csv('https://educationalpassages.org/wp-content/uploads/csv/sensor/Rock_Star_4s.csv')
-x5=df['longitude'].values
-y5=df['latitude'].values
-t5=df['water_temp'].values
-#m = Basemap(projection='stere',lon_0=(gb[0]+gb[1])/2.,lat_0=(gb[2]+gb[3])/2.,lat_ts=0,llcrnrlat=gb[2],urcrnrlat=gb[3],\
-#llcrnrlon=gb[0],urcrnrlon=gb[1],rsphere=6371200.,resolution='c',area_thresh=100)# JiM changed resolution to "c" for crude
-m = Basemap(projection='stere',lon_0=np.mean(x5),lat_0=np.mean(y5),lat_ts=0,llcrnrlat=np.min(y5)-.1,urcrnrlat=np.max(y5)+.1,\
-llcrnrlon=np.min(x5)-.1,urcrnrlon=np.max(x5)+.1,rsphere=6371200.,resolution='f',area_thresh=100)# JiM changed resolution to "c" for crude
+if year==2023:
+    df=pd.read_csv('https://educationalpassages.org/wp-content/uploads/csv/sensor/Riptide_8s.csv')
+    x2=df['longitude'].values
+    y2=df['latitude'].values
+    t2=df['water_temp'].values
+    df=pd.read_csv('https://educationalpassages.org/wp-content/uploads/csv/sensor/Rock_Star_3s.csv')
+    x3=df['longitude'].values
+    y3=df['latitude'].values
+    t3=df['water_temp'].values
+    df=pd.read_csv('https://educationalpassages.org/wp-content/uploads/csv/sensor/Riptide_9s.csv')
+    x4=df['longitude'].values
+    y4=df['latitude'].values
+    t4=df['water_temp'].values
+    df=pd.read_csv('https://educationalpassages.org/wp-content/uploads/csv/sensor/Rock_Star_4s.csv')
+    x5=df['longitude'].values
+    y5=df['latitude'].values
+    t5=df['water_temp'].values
+else:
+    df=pd.read_csv('https://educationalpassages.org/wp-content/uploads/csv/sensor/Riptide_10s.csv')
+    x2=df['longitude'].values
+    y2=df['latitude'].values
+    t2=df['water_temp'].values
+    df=pd.read_csv('https://educationalpassages.org/wp-content/uploads/csv/sensor/Rock_Star_5s.csv')
+    x3=df['longitude'].values
+    y3=df['latitude'].values
+    t3=df['water_temp'].values
+m = Basemap(projection='stere',lon_0=(gb[0]+gb[1])/2.,lat_0=(gb[2]+gb[3])/2.,lat_ts=0,llcrnrlat=gb[2],urcrnrlat=gb[3],\
+llcrnrlon=gb[0],urcrnrlon=gb[1],rsphere=6371200.,resolution='f',area_thresh=100)# JiM changed resolution to "c" for crude
+#m = Basemap(projection='stere',lon_0=np.mean(x5),lat_0=np.mean(y5),lat_ts=0,llcrnrlat=np.min(y5)-.1,urcrnrlat=np.max(y5)+.1,\
+#llcrnrlon=np.min(x5)-.1,urcrnrlon=np.max(x5)+.1,rsphere=6371200.,resolution='f',area_thresh=100)# JiM changed resolution to "c" for crude
 # draw coastlines, state and country boundaries, edge of map.
 m.drawcoastlines()
 m.fillcontinents(color='gray',zorder=3)
@@ -109,21 +121,37 @@ m.drawparallels(parallels,labels=[1,0,0,0],fontsize=12)
 # draw meridians
 meridians = np.arange(180.,360.,labint)
 m.drawmeridians(meridians,labels=[0,0,0,1],fontsize=12)
-df=pd.read_csv('/home/user/drift/data/EPMBD_084_1.csv')
-x=df['LON'].values
-y=df['LAT'].values
-t1=c2f(df['buoy_temp_F'].values)[0]
-mx1,my1=m(x,y)
-mx2,my2=m(x2,y2)
-mx3,my3=m(x3,y3)
-mx4,my4=m(x4,y4)
-mx5,my5=m(x5,y5)
-plot = plt.scatter(mx1, my1, s= 10, c = t1, cmap='coolwarm')
-plot = plt.scatter(mx2, my2, s= 10, c = t2, cmap='coolwarm')
-plot = plt.scatter(mx3, my3, s= 10, c = t3, cmap='coolwarm')
-plot = plt.scatter(mx4, my4, s= 10, c = t4, cmap='coolwarm')
-plot = plt.scatter(mx5, my5, s= 10, c = t5, cmap='coolwarm')
-fig.colorbar(plot)
+if year==2023:
+    df=pd.read_csv('/home/user/drift/data/EPMBD_084_1.csv')
+    x=df['LON'].values
+    y=df['LAT'].values
+    t1=c2f(df['buoy_temp_F'].values)[0]
+    mx1,my1=m(x,y)
+    mx2,my2=m(x2,y2)
+    mx3,my3=m(x3,y3)
+    mx4,my4=m(x4,y4)
+    mx5,my5=m(x5,y5)
+    plot = plt.scatter(mx1, my1, s= 10, c = t1, cmap='coolwarm')
+    plot = plt.scatter(mx2, my2, s= 10, c = t2, cmap='coolwarm')
+    plot = plt.scatter(mx3, my3, s= 10, c = t3, cmap='coolwarm')
+    plot = plt.scatter(mx4, my4, s= 10, c = t4, cmap='coolwarm')
+    plot = plt.scatter(mx5, my5, s= 10, c = t5, cmap='coolwarm')
+else:
+    df1=pd.read_csv('/home/user/drift/data/EPMBD_096_01.csv')
+    df2=pd.read_csv('/home/user/drift/data/EPMBD_097_01.csv')
+    df=pd.concat([df1,df2])
+    x=df['LON'].values
+    y=df['LAT'].values
+    t1=c2f(df['buoy_temp_F'].values)[0]
+    mx1,my1=m(x,y)
+    mx2,my2=m(x2,y2)
+    mx3,my3=m(x3,y3)
+    plot = plt.scatter(mx1, my1, s= 10, c = t1, cmap='coolwarm')
+    plot = plt.scatter(mx2, my2, s= 10, c = t2, cmap='coolwarm')
+    plot = plt.scatter(mx3, my3, s= 10, c = t3, cmap='coolwarm')
+    plt.title(min(df['time_stamp'])[0:10]+' deployment')
+cb=fig.colorbar(plot)
+cb.ax.set_title('degF')
 #plt.grid(True, 'both')
 
 # add another scatterplot
@@ -135,4 +163,4 @@ plt.scatter(x_line, y_line, c=z_line, s=0.1, cmap='coolwarm')
 '''
 
 plt.show()
-plt.savefig('SST_MakeBuoy_Miniboats.png')
+plt.savefig('SST_MakeBuoy_Miniboats_'+min(df['time_stamp'])[0:10]+'.png')
